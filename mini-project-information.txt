@@ -1,0 +1,53 @@
+1) Insert below the student numbers and names of the 1-3 group members, one per line
+347682 Janne Gröndahl
+601234 Minjung Ryu
+
+...
+
+2) Write below the name of your group
+BB
+
+...
+
+3) Write below a short description of the machine learning problem you plan to address
+We will study the Dog Breed Identification problem, which is a current playground 
+competition on Kaggle (https://www.kaggle.com/c/dog-breed-identification). In the task,
+we classify images of dogs on their breed. 
+...
+
+4) Write below what deep learning approach(es) you plan to employ in your project
+We will implement three approaches: (1) a basic vanilla CNN, (2) a CNN with image input 
++ facial keypoints detected using OpenCV, and (3) a combination of the pretrained
+ImageNet model and additional convolutional layers (transfer learning). Depending on the
+time we have, we hope to also experiment with different methods for improving accuracy,
+such as regularization (dropout and others), and possibly augmenting the data.
+
+...
+
+5) Write below what deep learning software you plan to use in your project
+We plan to learn and use Keras in this project. It seems like a useful framework 
+to learn, as it can be used to quickly prototype different neural network models. We 
+are also interested in learning TensorFlow, if we have extra time we will check it out 
+too.
+
+...
+
+6) Write below what computational resources you plan to utilize in your project
+Our plan is to use the CSC notebooks, as they support Keras.
+
+...
+
+7) Write below what kind of data you plan to use in your experiments
+The data in the challenge is a subset of the ImageNet dataset with only dog images, 
+and the labels are the dog breeds.
+
+...
+
+8) Write below what are the reference methods and results you plan to compare against
+As the task is a Kaggle competition, we can easily compare our results with the 
+leaderboard, as well as with results from publicly uploaded kernels (notebooks). For
+leaderboard scores we cannot know the used methods, as the competition is still ongoing.
+However methods used in the public kernels are of course clear and easy to compare with.
+
+...
+

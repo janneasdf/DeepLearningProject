@@ -1,0 +1,13 @@
+dog breed identification
+- vanilla CNN
+- vanilla CNN with input of OpenCV for keypoints + image
+- CNN on top of pretrained ImageNet
+
+generate recipes from existing recipes
+- data: ingredients+amounts, rating (by users)
+- generate recipes with high expected prediction
+
+classify hotel room as good/bad (for example too small)
+
+estimate if food (fruit?) has expired
+generate other parent's face, given one parent's face and desired baby's face
