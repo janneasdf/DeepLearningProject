@@ -1,6 +1,7 @@
 memo:
 
 source Anaconda3/Scripts/activate
+gh = hover
 
 transfer learning: mention bottleneck features
 run the pretrained model once for each of our own training images and save output values
