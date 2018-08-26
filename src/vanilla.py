@@ -127,7 +127,7 @@ def main():
         x = Dense(1024, activation='relu')(x)
         x = Dropout(0.5)(x)
         x = Dense(1024, activation='relu')(x)
-        predictions = Dense(n_unique_classes, activation='sigmoid')(x)
+        predictions = Dense(n_unique_classes, activation='softmax')(x)
         model = Model(inputs=base_model.input, outputs=predictions)
         # Freeze base layers
         for layer in base_model.layers:
@@ -177,8 +177,8 @@ def main():
             model.add(Flatten(input_shape=input_shape))
             model.add(Dense(1024, activation='relu'))
             model.add(Dropout(0.5))
-            model.add(Dense(1024, activation='relu'))
-            model.add(Dense(n_unique_classes, activation='relu'))
+            model.add(Dense(1024, activation='relu')) # needed?
+            model.add(Dense(n_unique_classes, activation='softmax'))
             model.compile(
                 optimizer=optimizers.SGD(
                     lr=learning_rate, momentum=momentum), loss='categorical_crossentropy', metrics=['accuracy'])
@@ -191,14 +191,22 @@ def main():
         def model_fn(learning_rate, momentum): return create_top_model(
             bottleneck_values_shape, learning_rate, momentum)
 
-        estimator = KerasClassifier(build_fn=model_fn)
-        grid_search = GridSearchCV(estimator=estimator, param_grid={
-            "learning_rate": [0.001, 0.01, 0.1, 0.3],
-            "momentum": [0.0, 0.2, 0.4, 0.6, 0.8],
-        })
-        grid_results = grid_search.fit(val_bottleneck_values, Y_validation)
-        print("Best score:", grid_results.best_score_)
-        print("Best params:", grid_results.best_params_)
+        def model1(): return model_fn(0.01, 0.0)
+
+        final_model = model1()
+        evaluation = final_model.evaluate(test_bottleneck_values, Y_test)
+
+        import code
+        code.interact(local=dict(globals(), **locals()))
+
+        # estimator = KerasClassifier(build_fn=model_fn)
+        # grid_search = GridSearchCV(estimator=estimator, param_grid={
+        #     "learning_rate": [0.001, 0.01, 0.1, 0.3],
+        #     "momentum": [0.0, 0.2, 0.4, 0.6, 0.8],
+        # })
+        # grid_results = grid_search.fit(val_bottleneck_values, Y_validation)
+        # print("Best score:", grid_results.best_score_)
+        # print("Best params:", grid_results.best_params_)
 
     transfer_branch()
 

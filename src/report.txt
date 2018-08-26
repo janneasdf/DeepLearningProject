@@ -1,0 +1,85 @@
+Abstract
+    Image classification is one of the most widely studied problems in computer vision. In recent years, convolutional neural network (CNN) based algorithms have been one of the most popular approaches for tackling this problem, for example in contests such as the ImageNet Large-Scale Visual Recognition Challenge (ILSVRC). The ImageNet database contains over one million labeled images with 1000 classes, and has become a well-known standard image database for image-related machine learning tasks. Many well-performing CNN architectures from the ILSVRC contests, such as AlexNet[refAlexnet], VGG16[refVGG], and Inception v3[refInception] are very well known in the machine learning community today, and models pre-trained on ImageNet or other image datasets are readily available online. 
+
+    Many highly performing CNN architectures and their pretrained models have also found use for other tasks than their original problem through transfer learning. CNNs used for the ImageNet classification task may be used as a part of models for other image-related classification tasks, since they can extract useful features from images. For example, the output of a pretrained CNN on an image from a new dataset can be used as input for another model, that is purposed for some other domain than the used CNN was. The pretrained CNN may also be modified, for example by removing some of the last layers, which pick up higher level features. Using a model pretrained on a large dataset can be particularly helpful, when the dataset available for the new task does not have enough samples for each class. As these models may take substantial processing power and time to train, using pretrained models often saves a lot of resources.
+    
+    In this paper, we apply transfer learning to dog breed identification, which is also a running competition on the Kaggle online machine learning contest platform at the time of writing. The dataset used contains 20,580 images of 120 different dog breeds. This is nearly ten times fewer samples per class than for example in the ImageNet dataset, which makes the task difficult. Also, since the images are all of dogs, the classification is much more fine-grained, since many different dog breeds may actually look very similar even to a non-expert human. We use the Inception v3[refInception] model, pretrained on the ImageNet dataset, as the basis of our model. We replace the non-convolutional top block of layers with a similar but untrained CNN. For training, we use the training set of the dog breed dataset. We choose to not alter any of the weights of the pretrained Inception model, as this would slow down training significantly, and might not affect performance much. Therefore, we only need to compute the Inception model's output for each image once, and then train our top model using these bottleneck values as input, instead of our original images. 
+
+(introduction)
+
+(related work)
+dog breed identification accuracies
+
+(method)
+    The dataset which is used for the experiments is the one provided for the "Dog Breed Identification" competition on Kaggle(refDogBreedComp). The dataset 
+    We implemented our model using Keras(refKeras) with the TensorFlow(refTensorFlow) backend. 
+
+(data)
+    The images have different sizes and aspect ratios. Since we are using the Inception v3 model, which expects images with width and height of 299, we resize each image in the dataset to those dimensions as a preprocessing step. After that, we do same preprocessing steps as in the original Inception v3, which is to scale the RGB values to the range [-1, 1].
+
+(experiments)
+    The architecture of the top model is similar to the one in Inception v3 and some other well-known CNNs. We use one dropout layer with dropout probability of 0.2. The purpose of the dropout layer is to make the system more robust against overfitting by randomly dropping features. This is followed by a fully-connected layer with softmax activation, with 120 units, which is the amount of classes in the dataset. 
+
+    The whole model contains many different hyper-parameters. For training, we chose to try two different optimizers popular in literature: stochastic gradient descent (SGD), and Adam(refAdam, TODO one sentence intro). Adam is an adaptive optimizer, while SGD is not. Adaptive optimizers are more complex and may perform better in certain situations. We decided to try both an adaptive (Adam) and non-adaptive (SGD) optimizer, since in some cases SGD may still perform much better(refSGDvsAdaptive). For both optimizers, we decided to try multiple parameters. With SGD, we chose to do a grid search on the learning rate and momentum, while with Adam we only alter the learning rate. With SGD, the learning rate decay was fixed at zero, and for Adam, the beta_1 and beta_2 were fixed at 0.9 and 0.999 respectively, as in the original paper, and decay was fixed at zero. 
+
+    In our experiments, we noticed that the model would converge very slowly after 10 epochs, so we decided to use 10 epochs for all experiments. Mini-batch size was fixed to 20, as it seemed to work well. To keep the scope of the study reasonable, we decided to not try different architectures for the top model.
+
+    In our experiments, the training data was split into a training set containing a random 77% sample of the whole training set, and a validation set containing the rest. At each epoch, each model was trained and then evaluated against the training set as well as the validation set, resulting in the training accuracy and loss and the validation accuracy and loss. To pick the best model, we choose the one resulting in maximal validation accuracy, since it represents accuracy on unseen data, while the training accuracy is mainly a tool for assessing overfitting. 
+
+(results)
+    In our experiments, best validation accuracy (90.4%) was achieved using SGD with a learning rate of 0.01 and momentum of 0.25. The best validation accuracy using Adam was 89.9%, with a learning rate of 0.00025. The results for the different SGD setups can be seen in (refTableSGDResults), and results for Adam in (refTableAdamResults).
+
+    The final model was then used to predict on the test set, and predictions were submitted to the dog breed identification contest on Kaggle. In the Kaggle contest, submission was evaluated on multi-class log loss between the predicted probability and the ground truth. Our model achieved a multi-class log loss of 1.027, resulting in position 632 out of 1037 on the leaderboard at the time of writing. Since the competition has not yet finished, the final ranking is not yet known.
+
+(discussion)
+    We achieved a validation accuracy of 90.4% in our experiments, and multi-class log loss of 1.027 on the test set, resulting in place 632 out of 1037 on the leaderboard.  
+
+    While the results could definitely still be improved upon by fine-tuning parameters or the training method more, our work shows that transfer learning can be applied to achieve fairly good accuracy, with much less effort and computational resources, than would most likely be required without it. 
+
+    To improve accuracy further, many different directions could be taken in future work. While we experimented with stochastic gradient descent and the Adam optimizer, more methods and parameters could be evaluated for training. Experimenting with the architecture of the top model is another aspect that could definitely be benefited from. We could also experiment with also adjusting weights in the last convolutional layers of the pretrained Inception v3 model that we use, or even all of the weights, as has been done by others(refAdjustingWeights), although this would slow down training. 
+    
+    In the future, it would be interesting to try creating a CNN from scratch to compare training times, prediction speed and required effort. This was originally planned, however it would not fit in the scope of the project. 
+
+(conclusions)
+
+
+1 Introduction
+
+2 Related Work
+todo kaggle results and submissions
+
+3 Method
+
+4 Data
+resizing?
+
+5 Experiments
+
+6 Results
+
+7 Discussion
+data augmentation, different optimizers, different top model architectures...
+
+8 Conclusions
+
+References
+
+refAlexnet
+https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
+ImageNet Classification with Deep Convolutional Neural Networks
+
+refVGG
+https://arxiv.org/abs/1409.1556
+Very Deep Convolutional Networks for Large-Scale Image Recognition
+
+refInception
+Rethinking the Inception Architecture for Computer Vision
+https://arxiv.org/abs/1512.00567
+
+refAdam
+Adam: A Method for Stochastic Optimization
+https://arxiv.org/abs/1412.6980
+
+refSGDvsAdaptive
+The Marginal Value of Adaptive Gradient Methods in Machine Learning
+https://arxiv.org/abs/1705.08292
